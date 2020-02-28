@@ -68,4 +68,9 @@ public class Vertex {
         return out;
     }
 
+    @Override
+    public String toString() {
+        //TODO
+        return null;
+    }
 }

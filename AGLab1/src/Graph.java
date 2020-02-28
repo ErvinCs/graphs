@@ -56,6 +56,11 @@ public class Graph {
         return noEdges;
     }
 
+    public Vertex getVertexById(int id) {
+        //TODO
+        return null;
+    }
+
     // Operations
     public Stream<Vertex> vertices(){
         return vertices.stream();
@@ -65,23 +70,33 @@ public class Graph {
         return edges.stream();
     }
 
-    public Optional<Edge> existsEdge(int v1id, Vertex v2id) {
-        Vertex v1 = this.vertices.stream()
+    public Optional<Edge> existsEdge(int v1id, int v2id) {
+        Optional<Vertex> v1optional = this.vertices.stream()
                .filter(vertex -> vertex.getvID() == v1id)
-               .findFirst()
-               .get();  //TODO
-        Vertex v2 = this.vertices.stream()
-                .filter(vertex -> vertex.getvID() == v1id)
-                .findFirst()
-                .get(); //TODO
-        v1.outEdges()
-                .filter(edge -> edge.getV1().equals(v1) && edge.getV2().equals(v2))
-                .findFirst();   //TODO
-        v2.inEdges()
-                .filter(edge -> edge.getV1().equals(v2) && edge.getV2().equals(v1))
-                .findFirst();   //TODO
+               .findFirst();
 
-        //TODO RETURN
+        Optional<Vertex> v2optional = this.vertices.stream()
+                .filter(vertex -> vertex.getvID() == v2id)
+                .findFirst();
+        if(v1optional.isEmpty() || v2optional.isEmpty())
+            throw new NullPointerException("Invalid Vertex!");
+
+        Vertex v1 = v1optional.get();
+        Vertex v2 = v2optional.get();
+        Optional<Edge> edgeOptional;
+
+        edgeOptional = v1.outEdges()
+                .filter(edge -> edge.getV1().equals(v1) && edge.getV2().equals(v2))
+                .findFirst();
+        if (edgeOptional.isPresent()) {
+            return edgeOptional;
+        }
+
+        edgeOptional = v2.inEdges()
+                .filter(edge -> edge.getV1().equals(v2) && edge.getV2().equals(v1))
+                .findFirst();
+
+        return edgeOptional;
     }
 
     public void addEdge(Edge edge) {
@@ -104,7 +119,13 @@ public class Graph {
         this.vertices.remove(vertex);
     }
 
-    public static Graph readGraph(String filename) throws FileNotFoundException {
+    @Override
+    public String toString() {
+        //TODO
+        return null;
+    }
+
+    private static Graph readGraph(String filename) throws FileNotFoundException {
         Graph graph = new Graph();
 
         File file = new File(filename);
