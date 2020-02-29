@@ -21,9 +21,18 @@ public class Edge {
         return weight;
     }
 
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
-        //TODO
-        return null;
+        return "Edge{Vertex1=" + v1.getvID() + ", Vertex2=" + v2.getvID() + ", Weight=" + weight + "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Edge other = (Edge)obj;
+        return other.getV1() == this.getV1() && other.getV2() == this.getV2();
     }
 }

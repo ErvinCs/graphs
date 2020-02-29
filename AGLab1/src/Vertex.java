@@ -70,7 +70,15 @@ public class Vertex {
 
     @Override
     public String toString() {
-        //TODO
-        return null;
+        return "Vertex{ID=" + vID + ", " +
+                "In-Degree=" + degreeIn + ", " +
+                "Out-Degree=" + degreeOut +  ", " +
+                "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Vertex other = (Vertex)obj;
+        return this.vID == other.vID;
     }
 }

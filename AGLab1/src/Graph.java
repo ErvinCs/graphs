@@ -56,9 +56,24 @@ public class Graph {
         return noEdges;
     }
 
-    public Vertex getVertexById(int id) {
-        //TODO
-        return null;
+    public Vertex getVertexById(int id) throws IllegalStateException {
+        Optional<Vertex> vertex = vertices.stream()
+                .filter(v -> v.getvID() == id)
+                .findFirst();
+        if (vertex.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return vertex.get();
+    }
+
+    public Edge getEdge(int v1id, int v2id) {
+        Optional<Edge> edge = edges.stream()
+                .filter(e -> e.getV1().getvID() == v1id && e.getV2().getvID() == v2id)
+                .findFirst();
+        if (edge.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return edge.get();
     }
 
     // Operations
@@ -116,16 +131,24 @@ public class Graph {
     }
 
     public void removeVertex(Vertex vertex) {
+        this.edges.forEach(edge -> {
+                    if (edge.getV1() == vertex || edge.getV2() == vertex) {
+                        edges.remove(edge);
+                    }
+                });
         this.vertices.remove(vertex);
     }
 
-    @Override
-    public String toString() {
+    public static Graph generateGraph() {
         //TODO
         return null;
     }
 
-    private static Graph readGraph(String filename) throws FileNotFoundException {
+    public static void saveGraph(Graph graph) {
+        //TODO
+    }
+
+    public static Graph readGraph(String filename) throws FileNotFoundException, IllegalStateException {
         Graph graph = new Graph();
 
         File file = new File(filename);
@@ -145,6 +168,7 @@ public class Graph {
             Vertex v2 = new Vertex(v2id);
             Edge edge = new Edge(v1, v2, weight);
 
+            //TODO - Fix here
             v1.addOutEdge(edge);
             v2.addInEdge(edge);
             graph.vertices.add(v1);
@@ -154,11 +178,13 @@ public class Graph {
         graph.noVertices = graph.vertices.size();
         graph.noEdges = graph.edges.size();
 
+        graph.vertices().forEach(v -> System.out.println(v.toString()));
+
         //Safety Check
         if (graph.noEdges != noEdges)
             throw new IllegalStateException("Read number of edges not equal to actual number of edges");
         if (graph.noVertices != noVertices)
-            throw new IllegalStateException("Read number of vertices not equal to actual number of vertices");
+            throw new IllegalStateException("Read number of vertices not equal to actual number of vertices: specified=" + noVertices + " & generated=" + graph.noVertices);
 
         return graph;
     }
