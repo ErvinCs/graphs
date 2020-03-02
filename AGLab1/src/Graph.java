@@ -1,5 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -152,13 +151,41 @@ public class Graph {
         this.noVertices--;
     }
 
-    public static Graph generateGraph() {
-        //TODO
-        return null;
+    public static Graph generateGraph(int noVertices, int noEdges) {
+        Graph g = new Graph();
+        Random rand = new Random();
+
+        for(int i = 0; i < noVertices; i++) {
+            g.addVertex(new Vertex(i));
+        }
+
+        int i = 0;
+        while (i < noEdges) {
+            int v1id = rand.nextInt(noVertices);
+            int v2id = rand.nextInt(noVertices);
+            if (g.existsEdge(v1id, v2id).isPresent()) {
+                continue;
+            }
+
+            int weight = rand.nextInt(500);
+            g.addEdge(new Edge(g.getVertexById(v1id), g.getVertexById(v2id), weight));
+            i++;
+        }
+
+        return g;
     }
 
-    public static void saveGraph(Graph graph) {
-        //TODO
+    public static void saveGraph(Graph graph, String filename) throws IOException {
+        File file = new File("res/" + filename);
+        file.createNewFile();
+        PrintWriter writer = new PrintWriter(new FileWriter(file));
+
+        writer.println(graph.getNoVertices() + " " + graph.getNoEdges());
+        for(Edge edge : graph.getEdges()) {
+            writer.println(edge.getV1().getvID() + " " + edge.getV2().getvID() + " " + edge.getWeight());
+        }
+
+        writer.close();
     }
 
     public static Graph readGraph(String filename) throws FileNotFoundException, IllegalStateException {
@@ -207,6 +234,8 @@ public class Graph {
             throw new IllegalStateException("Read number of edges not equal to actual number of edges");
         if (graph.noVertices != noVertices)
             throw new IllegalStateException("Read number of vertices not equal to actual number of vertices: specified=" + noVertices + " & generated=" + graph.noVertices);
+
+        scanner.close();
 
         return graph;
     }

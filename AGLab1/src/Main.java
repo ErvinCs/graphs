@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLOutput;
 import java.util.Optional;
 import java.util.Scanner;
@@ -25,16 +26,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         try {
             Graph graph = new Graph("res/res1.txt");
             boolean isRunning = true;
             int option;
-            Scanner scanner = new Scanner(System.in);
 
-            int v1, v2, e1, answer, weight;
+            int v1, v2, answer, weight, noVertices, noEdges;
             Optional<Edge> optionalEdge;
             Vertex vertex1, vertex2;
             Edge edge;
+            String filename;
             while(isRunning) {
                 printMenu();
                 System.out.println("Enter option: ");
@@ -141,24 +143,40 @@ public class Main {
                             break;
                         case 12:
                             // Save graph
+                            System.out.println("Name fle: ");
+                            filename = scanner.next();
+                            Graph.saveGraph(graph, filename);
                             break;
                         case 13:
-                            // Load graph
+                            System.out.println("Enter file name: ");
+                            filename = "res/";
+                            filename += scanner.next();
+                            graph = Graph.readGraph(filename);
                             break;
                         case 14:
                             // Generate graph
+                            System.out.println("Enter number of vertices: ");
+                            noVertices = scanner.nextInt();
+                            if (noVertices <= 0) {
+                                System.out.println("Invalid number of vertices!");
+                                break;
+                            }
+                            System.out.println("Enter number of edges: ");
+                            noEdges = scanner.nextInt();
+                            if (noEdges < 0) {
+                                System.out.println("Invalid number of edges! ");
+                            }
+                            graph = Graph.generateGraph(noVertices, noEdges);
                             break;
-
                     }
-                } catch (IllegalStateException ex) {
+                } catch (IllegalStateException | IOException ex) {
                     ex.printStackTrace();
                 }
             }
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+        } finally {
+            scanner.close();
         }
-
-
-
     }
 }
