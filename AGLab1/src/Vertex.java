@@ -79,6 +79,6 @@ public class Vertex {
     @Override
     public boolean equals(Object obj) {
         Vertex other = (Vertex)obj;
-        return this.vID == other.vID;
+        return this.getvID() == other.getvID();
     }
 }

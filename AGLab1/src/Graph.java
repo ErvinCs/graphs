@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Graph {
@@ -85,6 +86,11 @@ public class Graph {
         return edges.stream();
     }
 
+    public boolean existsVertex(int vid) {
+        return vertices.stream()
+                .anyMatch(v -> v.getvID() == vid);
+    }
+
     public Optional<Edge> existsEdge(int v1id, int v2id) {
         Optional<Vertex> v1optional = this.vertices.stream()
                .filter(vertex -> vertex.getvID() == v1id)
@@ -118,25 +124,32 @@ public class Graph {
         this.edges.add(edge);
         edge.getV1().addOutEdge(edge);
         edge.getV2().addInEdge(edge);
+        this.noEdges++;
     }
 
     public void removeEdge(Edge edge) {
         this.edges.remove(edge);
         edge.getV1().removeOutEdge(edge);
         edge.getV2().removeInEdge(edge);
+        this.noEdges--;
     }
 
     public void addVertex(Vertex vertex) {
         this.vertices.add(vertex);
+        this.noVertices++;
     }
 
     public void removeVertex(Vertex vertex) {
-        this.edges.forEach(edge -> {
-                    if (edge.getV1() == vertex || edge.getV2() == vertex) {
-                        edges.remove(edge);
-                    }
-                });
+        if (!this.existsVertex(vertex.getvID())) {
+            throw new IllegalStateException("No such vertex!");
+        }
+
+        this.edges = this.edges()
+                .filter(edge -> !(edge.getV1() == vertex || edge.getV2() == vertex))
+                .collect(Collectors.toSet());
+
         this.vertices.remove(vertex);
+        this.noVertices--;
     }
 
     public static Graph generateGraph() {
@@ -164,21 +177,30 @@ public class Graph {
             v2id = scanner.nextInt();
             weight = scanner.nextInt();
 
-            Vertex v1 = new Vertex(v1id);
-            Vertex v2 = new Vertex(v2id);
+            Vertex v1;
+            if (graph.existsVertex(v1id)) {
+                v1 = graph.getVertexById(v1id);
+            } else {
+                v1 = new Vertex(v1id);
+                graph.addVertex(v1);
+            }
+
+            Vertex v2;
+            if (graph.existsVertex(v2id)) {
+                v2 = graph.getVertexById(v2id);
+            } else {
+                v2 = new Vertex(v2id);
+                graph.addVertex(v2);
+            }
+
             Edge edge = new Edge(v1, v2, weight);
 
-            //TODO - Fix here
             v1.addOutEdge(edge);
             v2.addInEdge(edge);
-            graph.vertices.add(v1);
-            graph.vertices.add(v2);
             graph.edges.add(edge);
         }
         graph.noVertices = graph.vertices.size();
         graph.noEdges = graph.edges.size();
-
-        graph.vertices().forEach(v -> System.out.println(v.toString()));
 
         //Safety Check
         if (graph.noEdges != noEdges)
