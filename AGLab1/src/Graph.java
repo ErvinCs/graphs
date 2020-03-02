@@ -56,24 +56,18 @@ public class Graph {
         return noEdges;
     }
 
-    public Vertex getVertexById(int id) throws IllegalStateException {
+    public Optional<Vertex> getVertexById(int vid) throws IllegalStateException {
         Optional<Vertex> vertex = vertices.stream()
-                .filter(v -> v.getvID() == id)
+                .filter(v -> v.getvID() == vid)
                 .findFirst();
-        if (vertex.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        return vertex.get();
+        return vertex;
     }
 
-    public Edge getEdge(int v1id, int v2id) {
+    public Optional<Edge> getEdge(int v1id, int v2id) {
         Optional<Edge> edge = edges.stream()
                 .filter(e -> e.getV1().getvID() == v1id && e.getV2().getvID() == v2id)
                 .findFirst();
-        if (edge.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        return edge.get();
+        return edge;
     }
 
     // Operations
@@ -90,19 +84,7 @@ public class Graph {
                 .anyMatch(v -> v.getvID() == vid);
     }
 
-    public Optional<Edge> existsEdge(int v1id, int v2id) {
-        Optional<Vertex> v1optional = this.vertices.stream()
-               .filter(vertex -> vertex.getvID() == v1id)
-               .findFirst();
-
-        Optional<Vertex> v2optional = this.vertices.stream()
-                .filter(vertex -> vertex.getvID() == v2id)
-                .findFirst();
-        if(v1optional.isEmpty() || v2optional.isEmpty())
-            throw new NullPointerException("Invalid Vertex!");
-
-        Vertex v1 = v1optional.get();
-        Vertex v2 = v2optional.get();
+    public Optional<Edge> existsEdge(Vertex v1, Vertex v2) {
         Optional<Edge> edgeOptional;
 
         edgeOptional = v1.outEdges()
@@ -115,8 +97,10 @@ public class Graph {
         edgeOptional = v2.inEdges()
                 .filter(edge -> edge.getV1().equals(v2) && edge.getV2().equals(v1))
                 .findFirst();
-
-        return edgeOptional;
+        if (edgeOptional.isPresent()) {
+            return edgeOptional;
+        }        
+        return Optional.empty();
     }
 
     public void addEdge(Edge edge) {
@@ -139,10 +123,6 @@ public class Graph {
     }
 
     public void removeVertex(Vertex vertex) {
-        if (!this.existsVertex(vertex.getvID())) {
-            throw new IllegalStateException("No such vertex!");
-        }
-
         this.edges = this.edges()
                 .filter(edge -> !(edge.getV1() == vertex || edge.getV2() == vertex))
                 .collect(Collectors.toSet());
@@ -163,12 +143,15 @@ public class Graph {
         while (i < noEdges) {
             int v1id = rand.nextInt(noVertices);
             int v2id = rand.nextInt(noVertices);
-            if (g.existsEdge(v1id, v2id).isPresent()) {
+            Vertex v1 = g.getVertexById(v1id).get();
+            Vertex v2 = g.getVertexById(v2id).get();
+
+            if (g.existsEdge(v1, v2).isPresent()) {
                 continue;
             }
 
             int weight = rand.nextInt(500);
-            g.addEdge(new Edge(g.getVertexById(v1id), g.getVertexById(v2id), weight));
+            g.addEdge(new Edge(v1, v2, weight));
             i++;
         }
 
@@ -206,7 +189,7 @@ public class Graph {
 
             Vertex v1;
             if (graph.existsVertex(v1id)) {
-                v1 = graph.getVertexById(v1id);
+                v1 = graph.getVertexById(v1id).get();
             } else {
                 v1 = new Vertex(v1id);
                 graph.addVertex(v1);
@@ -214,7 +197,7 @@ public class Graph {
 
             Vertex v2;
             if (graph.existsVertex(v2id)) {
-                v2 = graph.getVertexById(v2id);
+                v2 = graph.getVertexById(v2id).get();
             } else {
                 v2 = new Vertex(v2id);
                 graph.addVertex(v2);

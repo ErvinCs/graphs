@@ -29,6 +29,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         try {
             Graph graph = new Graph("res/res1.txt");
+            Controller controller = new Controller(graph);
             boolean isRunning = true;
             int option;
 
@@ -49,11 +50,11 @@ public class Main {
                             break;
                         case 1:
                             //Number of vertices
-                            System.out.println("Number of Vertices: " + graph.getNoVertices());
+                            System.out.println("Number of Vertices: " + controller.getNoVertices());
                             break;
                         case 2:
                             // Parse set of vertices
-                            graph.vertices()
+                            controller.vertices()
                                     .forEach(v -> System.out.println(v.toString()));
                             break;
                         case 3:
@@ -62,30 +63,30 @@ public class Main {
                             v1 = scanner.nextInt();
                             System.out.println("Give vertex #2 id: ");
                             v2 = scanner.nextInt();
-                            optionalEdge = graph.existsEdge(v1, v2);
-                            if (optionalEdge.isEmpty()) {
-                                System.out.println("No such Edge exists!");
-                            } else {
-                                System.out.println("Edge found: " + optionalEdge.get().toString());
-                            }
+                            edge = controller.existsEdge(v1, v2);
+//                            if (optionalEdge.isEmpty()) {
+//                                System.out.println("No such Edge exists!");
+//                            } else {
+                                System.out.println("Edge found: " + edge.toString());
+//                            }
                             break;
                         case 4:
                             // In-Out degree of a vertex
                             System.out.println("Give vertex id: ");
                             v1 = scanner.nextInt();
-                            vertex1 = graph.getVertexById(v1);
+                            vertex1 = controller.getVertexById(v1);
                             System.out.println("In-degree=" + vertex1.getInDegree() + " | " + "Out-degree=" + vertex1.getOutDegree());
                             break;
                         case 5:
                             // Parse set of edges
-                            graph.getEdges()
+                            controller.getEdges()
                                     .forEach(e -> System.out.println(e.toString()));
                             break;
                         case 6:
                             // Inbound edges of a verte
                             System.out.println("Give vertex id: ");
                             v1 = scanner.nextInt();
-                            graph.getVertexById(v1)
+                            controller.getVertexById(v1)
                                     .inEdges()
                                     .forEach(e -> System.out.println(e.toString()));
                             break;
@@ -95,7 +96,7 @@ public class Main {
                             v1 = scanner.nextInt();
                             System.out.println("Give edge vertex2: ");
                             v2 = scanner.nextInt();
-                            edge = graph.getEdge(v1, v2);
+                            edge = controller.getEdge(v1, v2);
                             System.out.println(edge.toString());
                             System.out.println("Update(1/0): ");
                             answer = scanner.nextInt();
@@ -109,21 +110,21 @@ public class Main {
                             // Add edge
                             System.out.println("Give vertex1 id: ");
                             v1 = scanner.nextInt();
-                            vertex1 = graph.getVertexById(v1);
+                            vertex1 = controller.getVertexById(v1);
                             System.out.println("Give vertex2 id: ");
                             v2 = scanner.nextInt();
-                            vertex2 = graph.getVertexById(v2);
+                            vertex2 = controller.getVertexById(v2);
                             System.out.println("Give weight");
                             weight = scanner.nextInt();
                             edge = new Edge(vertex1, vertex2, weight);
-                            graph.addEdge(edge);
+                            controller.addEdge(edge);
                             break;
                         case 9:
                             // Add vertex
                             System.out.println("Give vertex id: ");
                             v1 = scanner.nextInt();
                             vertex1 = new Vertex(v1);
-                            graph.addVertex(vertex1);
+                            controller.addVertex(vertex1);
                             break;
                         case 10:
                             // Remove edge
@@ -131,19 +132,19 @@ public class Main {
                             v1 = scanner.nextInt();
                             System.out.println("Give edge vertex2: ");
                             v2 = scanner.nextInt();
-                            edge = graph.getEdge(v1, v2);
-                            graph.removeEdge(edge);
+                            edge = controller.getEdge(v1, v2);
+                            controller.removeEdge(edge);
                             break;
                         case 11:
                             // Remove vertex
                             System.out.println("Give vertex id: ");
                             v1 = scanner.nextInt();
-                            vertex1 = graph.getVertexById(v1);
-                            graph.removeVertex(vertex1);
+                            vertex1 = controller.getVertexById(v1);
+                            controller.removeVertex(vertex1);
                             break;
                         case 12:
                             // Save graph
-                            System.out.println("Name fle: ");
+                            System.out.println("Name file: ");
                             filename = scanner.next();
                             Graph.saveGraph(graph, filename);
                             break;
@@ -151,7 +152,7 @@ public class Main {
                             System.out.println("Enter file name: ");
                             filename = "res/";
                             filename += scanner.next();
-                            graph = Graph.readGraph(filename);
+                            controller.setGraph(Graph.readGraph(filename));
                             break;
                         case 14:
                             // Generate graph
@@ -166,7 +167,7 @@ public class Main {
                             if (noEdges < 0) {
                                 System.out.println("Invalid number of edges! ");
                             }
-                            graph = Graph.generateGraph(noVertices, noEdges);
+                            controller.setGraph(Graph.generateGraph(noVertices, noEdges));
                             break;
                     }
                 } catch (IllegalStateException | IOException ex) {
