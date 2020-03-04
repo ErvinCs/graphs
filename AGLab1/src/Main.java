@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLOutput;
+import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -34,7 +35,6 @@ public class Main {
             int option;
 
             int v1, v2, answer, weight, noVertices, noEdges;
-            Optional<Edge> optionalEdge;
             Vertex vertex1, vertex2;
             Edge edge;
             String filename;
@@ -64,11 +64,7 @@ public class Main {
                             System.out.println("Give vertex #2 id: ");
                             v2 = scanner.nextInt();
                             edge = controller.existsEdge(v1, v2);
-//                            if (optionalEdge.isEmpty()) {
-//                                System.out.println("No such Edge exists!");
-//                            } else {
-                                System.out.println("Edge found: " + edge.toString());
-//                            }
+                            System.out.println("Edge found: " + edge.toString());
                             break;
                         case 4:
                             // In-Out degree of a vertex
@@ -83,7 +79,7 @@ public class Main {
                                     .forEach(e -> System.out.println(e.toString()));
                             break;
                         case 6:
-                            // Inbound edges of a verte
+                            // Inbound edges of a vertez
                             System.out.println("Give vertex id: ");
                             v1 = scanner.nextInt();
                             controller.getVertexById(v1)
@@ -92,18 +88,23 @@ public class Main {
                             break;
                         case 7:
                             // Update edge information
+                            answer = -1;
                             System.out.println("Give edge vertex1: ");
                             v1 = scanner.nextInt();
                             System.out.println("Give edge vertex2: ");
                             v2 = scanner.nextInt();
                             edge = controller.getEdge(v1, v2);
                             System.out.println(edge.toString());
-                            System.out.println("Update(1/0): ");
-                            answer = scanner.nextInt();
-                            if (answer == 1) {
-                                System.out.println("Give new weight: ");
-                                weight = scanner.nextInt();
-                                edge.setWeight(weight);
+                            while (answer != 0 || answer != 1) {
+                                System.out.println("Update(1/0): ");
+                                answer = scanner.nextInt();
+                                if (answer == 1) {
+                                    System.out.println("Give new weight: ");
+                                    weight = scanner.nextInt();
+                                    edge.setWeight(weight);
+                                } else {
+                                    System.out.println("Invalid input!");
+                                }
                             }
                             break;
                         case 8:
@@ -170,7 +171,7 @@ public class Main {
                             controller.setGraph(Graph.generateGraph(noVertices, noEdges));
                             break;
                     }
-                } catch (IllegalStateException | IOException ex) {
+                } catch (IllegalStateException | IOException | InputMismatchException ex) {
                     ex.printStackTrace();
                 }
             }
