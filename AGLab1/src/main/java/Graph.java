@@ -9,7 +9,7 @@ public class Graph {
     private int noVertices;
     private int noEdges;
 
-    // Constructors
+    // -------------------- Constructors --------------------
     /**
      * Creates an empty Graph objects
      */
@@ -57,7 +57,7 @@ public class Graph {
         noEdges = graph.noEdges;
     }
 
-    // Getters & Setters
+    // -------------------- Getters & Setters --------------------
     /**
      * @return Set of vertices of the graph
      */
@@ -89,7 +89,7 @@ public class Graph {
     /**
      * Search for a Vertex in the graph, given the vertex ID
      * @param vid - ID of the Vertex
-     * @return Optional<Vertex> - empty if a Vertex with the @vid does not exist; contains the Vertex otheriwse
+     * @return Optional<Vertex> - empty if a Vertex with the @vid does not exist; contains the Vertex otherwise
      */
     public Optional<Vertex> getVertexById(int vid) {
         Optional<Vertex> vertex = vertices.stream()
@@ -111,7 +111,7 @@ public class Graph {
         return edge;
     }
 
-    // Operations
+    // -------------------- Operations --------------------
     /**
      * Used to parse the set of vertices
      * @return Stream of Vertex for the graph
@@ -206,6 +206,8 @@ public class Graph {
         this.vertices.remove(vertex);
         this.noVertices--;
     }
+
+    // -------------------- Static --------------------
 
     /**
      * Generates a random directed graph with the specified number of vertices and edges
