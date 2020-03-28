@@ -11,7 +11,7 @@ public class Graph {
 
     // -------------------- Constructors --------------------
     /**
-     * Creates an empty Graph objects
+     * Creates an empty Graph object
      */
     public Graph() {
         this.vertices = new HashSet<>();
@@ -287,27 +287,20 @@ public class Graph {
         noVertices = scanner.nextInt();
         noEdges = scanner.nextInt();
 
+        for(int i = 0; i < noVertices; i++) {
+            Vertex v = new Vertex(i);
+            graph.addVertex(v);
+        }
+
         int v1id, v2id, weight;
         while(scanner.hasNextLine()) {
             v1id = scanner.nextInt();
             v2id = scanner.nextInt();
             weight = scanner.nextInt();
 
-            Vertex v1;
-            if (graph.existsVertex(v1id)) {
-                v1 = graph.getVertexById(v1id).get();
-            } else {
-                v1 = new Vertex(v1id);
-                graph.addVertex(v1);
-            }
+            Vertex v1 = graph.getVertexById(v1id).get();
 
-            Vertex v2;
-            if (graph.existsVertex(v2id)) {
-                v2 = graph.getVertexById(v2id).get();
-            } else {
-                v2 = new Vertex(v2id);
-                graph.addVertex(v2);
-            }
+            Vertex v2 = graph.getVertexById(v2id).get();
 
             Edge edge = new Edge(v1, v2, weight);
 

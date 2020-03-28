@@ -1,6 +1,5 @@
 import java.io.FileNotFoundException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -189,5 +188,50 @@ public class Controller {
      */
     public void removeVertex(Vertex vertex) throws IllegalStateException {
         graph.removeVertex(vertex);
+    }
+
+    public List<Vertex> shortestPath(int vertexStartID, int vertexEndID) throws IllegalStateException {
+        Optional<Vertex> vertexStartOptional = graph.getVertexById(vertexStartID);
+        Optional<Vertex> vertexEndOptional = graph.getVertexById(vertexEndID);
+        if (vertexEndOptional.isEmpty() || vertexStartOptional.isEmpty()) {
+            throw new IllegalStateException("Given vertices do not exist!");
+        }
+        Vertex vertexStart = vertexStartOptional.get();
+        Vertex vertexEnd = vertexEndOptional.get();
+
+        Queue<Vertex> queue = new LinkedList<>();
+        Map<Vertex, Vertex> visited = new LinkedHashMap<>();
+        queue.add(vertexStart);
+        visited.put(new Vertex(-1), vertexStart);
+
+        boolean pathFound = false;
+        while(!pathFound && !queue.isEmpty()) {
+            Vertex current = queue.poll();
+            for(Edge e : current.getOutEdges()) {
+                if(!visited.containsValue(e.getV2())) {
+                    queue.add(e.getV2());
+                    visited.put(current, e.getV2());
+                    if(e.getV2().equals(vertexEnd)) {
+                        pathFound = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(!pathFound) {
+            throw new IllegalStateException("No such path!");
+        }
+
+        List<Vertex> path = new ArrayList<>();
+        for(Vertex key : visited.keySet()) {
+            if (key.getvID() == -1) {
+                continue;
+            }
+            path.add(key);
+        }
+        path.add(vertexEnd);
+
+        return path;
     }
 }

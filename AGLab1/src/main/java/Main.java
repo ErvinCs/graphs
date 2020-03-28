@@ -23,6 +23,7 @@ public class Main {
         strBuilder.append("\t12. Save graph\n");
         strBuilder.append("\t13. Load graph\n");
         strBuilder.append("\t14. Generate graph\n");
+        strBuilder.append("\t15. Shortest path\n");
         System.out.println(strBuilder);
     }
 
@@ -102,6 +103,8 @@ public class Main {
                                     System.out.println("Give new weight: ");
                                     weight = scanner.nextInt();
                                     edge.setWeight(weight);
+                                    // Leave this break here
+                                    break;
                                 } else {
                                     System.out.println("Invalid input!");
                                 }
@@ -154,6 +157,7 @@ public class Main {
                             filename = "res/";
                             filename += scanner.next();
                             controller.setGraph(Graph.readGraph(filename));
+                            graph = controller.getGraph();
                             break;
                         case 14:
                             // Generate graph
@@ -170,6 +174,15 @@ public class Main {
                             }
                             controller.setGraph(Graph.generateGraph(noVertices, noEdges));
                             break;
+                        case 15:
+                            // Shortest path
+                            System.out.println("Give vertex1 id: ");
+                            v1 = scanner.nextInt();
+                            System.out.println("Give vertex2 id: ");
+                            v2 = scanner.nextInt();
+                            controller.shortestPath(v1, v2).forEach(v -> {
+                                System.out.println(v.toString());
+                            });
                     }
                 } catch (IllegalStateException | IOException | InputMismatchException ex) {
                     ex.printStackTrace();
