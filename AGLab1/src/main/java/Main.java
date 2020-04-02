@@ -180,7 +180,7 @@ public class Main {
                             v1 = scanner.nextInt();
                             System.out.println("Give vertex2 id: ");
                             v2 = scanner.nextInt();
-                            controller.shortestPath(v1, v2).forEach(v -> {
+                            Util.shortestPath(controller.getGraph(), v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
                     }

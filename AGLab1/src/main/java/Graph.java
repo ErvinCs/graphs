@@ -204,7 +204,11 @@ public class Graph {
                 .collect(Collectors.toSet());
 
         this.vertices.remove(vertex);
+        this.vertices.stream()
+                .filter(v -> v.getvID() > vertex.getvID())
+                .forEach(v -> v.setvID(v.getvID() - 1));
         this.noVertices--;
+        this.noEdges = this.edges.size();
     }
 
     // -------------------- Static --------------------
@@ -257,9 +261,13 @@ public class Graph {
         PrintWriter writer = new PrintWriter(new FileWriter(file));
 
         writer.println(graph.getNoVertices() + " " + graph.getNoEdges());
-        for(Edge edge : graph.getEdges()) {
+        Iterator<Edge> iterator = graph.edges().iterator();
+        for(int i = 0; i < graph.noEdges-1; i++) {
+            Edge edge = iterator.next();
             writer.println(edge.getV1().getvID() + " " + edge.getV2().getvID() + " " + edge.getWeight());
         }
+        Edge edge = iterator.next();
+        writer.print(edge.getV1().getvID() + " " + edge.getV2().getvID() + " " + edge.getWeight());
 
         writer.close();
     }
@@ -298,8 +306,12 @@ public class Graph {
             v2id = scanner.nextInt();
             weight = scanner.nextInt();
 
+            //if (!graph.existsVertex(v1id))
+            //    graph.addVertex(new Vertex(v1id));
             Vertex v1 = graph.getVertexById(v1id).get();
 
+            //if (!graph.existsVertex(v2id))
+            //    graph.addVertex(new Vertex(v2id));
             Vertex v2 = graph.getVertexById(v2id).get();
 
             Edge edge = new Edge(v1, v2, weight);

@@ -5,7 +5,7 @@ import java.util.stream.Stream;
  * Represents a vertex identified by an ID in a directed graph.
  * Holds references to all its inbound & outbound edges.
  */
-public class Vertex {
+public class Vertex implements Comparable{
     private int vID;
     private Set<Edge> in;
     private Set<Edge> out;
@@ -81,6 +81,8 @@ public class Vertex {
         return this.vID;
     }
 
+    public void setvID(int vid) { this.vID = vid; }
+
     /**
      * @return int - the inbound degree of the vertex (number of inbound edges)
      */
@@ -121,5 +123,15 @@ public class Vertex {
     public boolean equals(Object obj) {
         Vertex other = (Vertex)obj;
         return this.getvID() == other.getvID();
+    }
+
+    @Override
+    public int compareTo(Object obj) {
+        Vertex other = (Vertex)obj;
+        if (this.getvID() < other.getvID())
+            return -1;
+        else if (this.getvID() > other.getvID())
+            return 1;
+        else return 0;
     }
 }
