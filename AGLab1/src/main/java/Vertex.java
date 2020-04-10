@@ -115,7 +115,7 @@ public class Vertex implements Comparable{
     public String toString() {
         return "Vertex{ID=" + vID + ", " +
                 "In-Degree=" + degreeIn + ", " +
-                "Out-Degree=" + degreeOut +  ", " +
+                "Out-Degree=" + degreeOut +
                 "}";
     }
 
