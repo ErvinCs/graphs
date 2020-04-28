@@ -3,7 +3,7 @@
  * It is an outbound edge with regards to Vertex 1 and inbound with regards to Vertex 2.
  * Holds an associated weight (or cost).
  */
-public class Edge {
+public class Edge implements Comparable {
     private Vertex v1;
     private Vertex v2;
     private int weight;
@@ -58,5 +58,15 @@ public class Edge {
     public boolean equals(Object obj) {
         Edge other = (Edge)obj;
         return other.getV1() == this.getV1() && other.getV2() == this.getV2();
+    }
+
+    @Override
+    public int compareTo(Object obj) {
+        Edge other = (Edge)obj;
+        if (this.getWeight() < other.getWeight())
+            return -1;
+        else if (this.getWeight() > other.getWeight())
+            return 1;
+        else return 0;
     }
 }

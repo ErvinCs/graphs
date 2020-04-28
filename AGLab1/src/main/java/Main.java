@@ -24,13 +24,14 @@ public class Main {
         strBuilder.append("\t13. Load graph\n");
         strBuilder.append("\t14. Generate graph\n");
         strBuilder.append("\t15. Shortest path\n");
+        strBuilder.append("\t16. Lowest cost path\n");
         System.out.println(strBuilder);
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         try {
-            Graph graph = new Graph("res/res1.txt");
+            Graph graph = new Graph("res/ex.txt");
             Controller controller = new Controller(graph);
             boolean isRunning = true;
             int option;
@@ -181,6 +182,15 @@ public class Main {
                             System.out.println("Give vertex2 id: ");
                             v2 = scanner.nextInt();
                             Util.shortestPath(controller.getGraph(), v1, v2).forEach(v -> {
+                                System.out.println(v.toString());
+                            });
+                        case 16:
+                            // Lowest cost path
+                            System.out.println("Give vertex1 id: ");
+                            v1 = scanner.nextInt();
+                            System.out.println("Give vertex2 id: ");
+                            v2 = scanner.nextInt();
+                            Util.dijkstraLowestCostPath(controller.getGraph(), v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
                     }
