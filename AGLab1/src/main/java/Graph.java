@@ -14,8 +14,8 @@ public class Graph {
      * Creates an empty Graph object
      */
     public Graph() {
-        this.vertices = new HashSet<>();
-        this.edges = new HashSet<>();
+        this.vertices = new LinkedHashSet<>();
+        this.edges = new LinkedHashSet<>();
         this.noVertices = 0;
         this.noEdges = 0;
     }
@@ -26,8 +26,8 @@ public class Graph {
      * @param edges - Set of Edge
      */
     public Graph(Set<Vertex> vertices, Set<Edge> edges) {
-        this.vertices = vertices;
-        this.edges = edges;
+        this.vertices = new LinkedHashSet<>(vertices);
+        this.edges = new LinkedHashSet<>(edges);
         this.noVertices = vertices.size();
         this.noEdges = edges.size();
     }
@@ -37,8 +37,8 @@ public class Graph {
      * @param other - Graph to be copied
      */
     public Graph(Graph other) {
-        vertices = other.vertices;
-        edges = other.edges;
+        vertices = new LinkedHashSet<>(other.vertices);
+        edges = new LinkedHashSet<>(other.edges);
         noVertices = other.noVertices;
         noEdges = other.noEdges;
     }

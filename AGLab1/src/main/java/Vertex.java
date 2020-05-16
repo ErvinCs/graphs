@@ -19,9 +19,9 @@ public class Vertex implements Comparable{
      */
     public Vertex(int id) {
         vID = id;
-        in = new HashSet<>();
+        in = new LinkedHashSet<>();
         degreeIn = 0;
-        out = new HashSet<>();
+        out = new LinkedHashSet<>();
         degreeOut = 0;
     }
 

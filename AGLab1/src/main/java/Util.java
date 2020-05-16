@@ -1,3 +1,4 @@
+import com.sun.jdi.request.InvalidRequestStateException;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -168,7 +169,64 @@ public class Util {
      * Problem Statement:
      *  Given an undirected graph, find a Hamiltonian cycle (if it exists).
      */
-    //public static List<Vertex> FindHamiltonianCycle(Graph graph) {
-    //
-    //}
+    public static List<Vertex> FindHamiltonianCycle(Graph initGraph) {
+        Graph graph = new Graph(initGraph);
+
+        for(Vertex vertex : graph.getVertices()) {
+            if (vertex.getOutDegree() < 2) {
+                throw new IllegalStateException("A graph with a vertex having degree < 2 cannot have a hamiltonian cycle!");
+            }
+        }
+
+        for(Vertex vertex : graph.getVertices()) {
+            Iterator<Vertex> vertexIterator = vertex.getOutVertices().iterator();
+            while (vertex.getOutDegree() > 2) {
+                Vertex current = vertexIterator.next();
+                if (current.getOutDegree() > 2) {
+                    Edge inEdge = graph.getEdge(vertex.getvID(), current.getvID()).get();
+                    Edge outEdge = graph.getEdge(current.getvID(), vertex.getvID()).get();
+                    graph.removeEdge(inEdge);
+                    graph.removeEdge(outEdge);
+                }
+            }
+        }
+
+        List<Vertex> cycle = new ArrayList<>();
+        boolean[] visited = new boolean[graph.getNoVertices()];
+        for(Vertex vertex : graph.getVertices()) {
+            visited[vertex.getvID()] = false;
+        }
+
+        Vertex current = graph.getVertexById(0).get();
+        cycle.add(current);
+        boolean finished = false;
+        while(!finished) {
+            for(Vertex outbound : current.getOutVertices()) {
+                if (!visited[outbound.getvID()]) {
+                    visited[outbound.getvID()] = true;
+
+                    // Destroy the edge so that it can't go back
+                    Edge inEdge = graph.getEdge(outbound.getvID(), current.getvID()).get();
+                    Edge outEdge = graph.getEdge(current.getvID(), outbound.getvID()).get();
+                    graph.removeEdge(inEdge);
+                    graph.removeEdge(outEdge);
+
+                    current = outbound;
+                    cycle.add(current);
+                    break;
+                }
+            }
+            if (current == graph.getVertexById(0).get()) {
+                finished = true;
+            }
+        }
+
+        for(Vertex vertex : graph.getVertices()) {
+            if (!visited[vertex.getvID()]) {
+                throw new IllegalStateException("The graph does not contain a cycle!");
+            }
+        }
+
+        return cycle;
+    }
 }

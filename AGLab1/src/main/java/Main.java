@@ -26,6 +26,7 @@ public class Main {
         strBuilder.append("\t15. Shortest path\n");
         strBuilder.append("\t16. Lowest cost path\n");
         strBuilder.append("\t17. Highest cost path (DAG)\n");
+        strBuilder.append("\t18. Detect a cycle (Undirected Graph)");
         System.out.println(strBuilder);
     }
 
@@ -185,6 +186,7 @@ public class Main {
                             Util.shortestPath(controller.getGraph(), v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
+                            break;
                         case 16:
                             // Lowest cost path
                             System.out.println("Give vertex1 id: ");
@@ -194,6 +196,7 @@ public class Main {
                             Util.dijkstraLowestCostPath(controller.getGraph(), v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
+                            break;
                         case 17:
                             // Highest cost path
                             System.out.println("Give vertex1 id: ");
@@ -203,9 +206,15 @@ public class Main {
                             Graph.HighestCostPath(graph, v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
+                            break;
+                        case 18:
+                            // Cycle detection - Undirected Graph
+                            Util.FindHamiltonianCycle(graph).forEach(v -> {
+                                System.out.println(v.toString());
+                            });
+                            break;
                     }
                 } catch (IllegalStateException | IOException | InputMismatchException ex) {
-                    //System.out.println(ex.toString());
                     ex.printStackTrace();
                 }
             }
