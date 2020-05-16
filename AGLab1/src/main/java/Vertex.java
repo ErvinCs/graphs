@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -110,6 +111,29 @@ public class Vertex implements Comparable{
     public Set<Edge> getOutEdges() {
         return out;
     }
+
+    /**
+     * @return Set - the set of vertices which form outbound edges with this vertex
+     */
+    public Set<Vertex> getOutVertices()
+    {
+        Set<Vertex> outVerts = out.stream()
+                .map(e -> e.getV2())
+                .collect(Collectors.toSet());
+        return outVerts;
+    }
+
+    /**
+     * @return Set - the set of vertices which form inbound edges to this vertex
+     */
+    public Set<Vertex> getInVertices()
+    {
+        Set<Vertex> inVerts = in.stream()
+                .map(e -> e.getV1())
+                .collect(Collectors.toSet());
+        return inVerts;
+    }
+
 
     @Override
     public String toString() {

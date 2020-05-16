@@ -25,6 +25,7 @@ public class Main {
         strBuilder.append("\t14. Generate graph\n");
         strBuilder.append("\t15. Shortest path\n");
         strBuilder.append("\t16. Lowest cost path\n");
+        strBuilder.append("\t17. Highest cost path (DAG)\n");
         System.out.println(strBuilder);
     }
 
@@ -193,8 +194,18 @@ public class Main {
                             Util.dijkstraLowestCostPath(controller.getGraph(), v1, v2).forEach(v -> {
                                 System.out.println(v.toString());
                             });
+                        case 17:
+                            // Highest cost path
+                            System.out.println("Give vertex1 id: ");
+                            v1 = scanner.nextInt();
+                            System.out.println("Give vertex2 id: ");
+                            v2 = scanner.nextInt();
+                            Graph.HighestCostPath(graph, v1, v2).forEach(v -> {
+                                System.out.println(v.toString());
+                            });
                     }
                 } catch (IllegalStateException | IOException | InputMismatchException ex) {
+                    //System.out.println(ex.toString());
                     ex.printStackTrace();
                 }
             }

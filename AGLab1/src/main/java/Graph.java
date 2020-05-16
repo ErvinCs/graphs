@@ -333,4 +333,131 @@ public class Graph {
 
         return graph;
     }
+
+    /*
+     * Problem Statement:
+     *  Write a program that, given a graph with costs, does the following:
+     *
+     *      1. Verify if the corresponding graph is a DAG and performs a topological sorting
+     *          of the activities using the algorithm based on depth-first traversal (Tarjan's algorithm);
+     *      2. If it is a DAG, finds a highest cost path between two given vertices, in O(m+n).
+     */
+    /**
+     * If the graph is a DAG then returns a stack containing the vertices, where the top
+     *  of the stack is the last reached vertex
+     * @param graph Directed Graph to be sorted
+     * @throws IllegalStateException
+     *      Thrown if the graph cannot be topologically sorted i.e. if the graph contains a cycle
+     * @return
+     */
+    public static Stack<Vertex> TopologicalSort(Graph graph) throws IllegalStateException {
+        Stack<Vertex> topoSortedContainer = new Stack<>();
+        Queue<Vertex> queue = new LinkedList<>();
+        Map<Vertex, Integer> inCountMap = new HashMap<>();
+        boolean[] visited = new boolean[graph.getNoVertices()];
+
+        for(int i = 0; i < graph.getNoVertices(); i++) {
+            visited[i] = false;
+        }
+
+        for(Vertex v : graph.vertices) {
+            inCountMap.put(v, v.getInDegree());
+            if (v.getInDegree() == 0) {
+                queue.add(v);
+                visited[v.getvID()] = true;
+            }
+        }
+
+        while(!queue.isEmpty()) {
+            Vertex current = queue.poll();
+            topoSortedContainer.push(current);
+            for(Vertex v : current.getOutVertices()) {
+                if (!visited[v.getvID()]) {
+                    inCountMap.put(v, inCountMap.get(v) - 1);
+                    if (inCountMap.get(v) <= 0 && !visited[v.getvID()]) {
+                        queue.add(v);
+                        visited[v.getvID()] = true;
+                    }
+                }
+            }
+        }
+
+        for(int i = 0; i < graph.getNoVertices(); i++) {
+            if (!visited[i]) {
+                throw new IllegalStateException("TopologicalSort could not reach all vertices!");
+            }
+        }
+
+        return topoSortedContainer;
+    }
+
+    /**
+     * Uses the topological sorting of the graph and constructs a highest cost path using the sorting.
+     * @param graph Graph
+     * @param source Vertex where the path begins
+     * @param destination Vertex where the path ends
+     * @return List<Vertex> containing the vertices from that build a highest cost path from {@code source} to {@code desination}
+     * @throws IllegalStateException
+     *      If the {@code graph} is not a DAG
+     *      If the {@code source} Vertex or {@code destination} Vertex do not exist
+     */
+    public static List<Vertex> HighestCostPath(Graph graph, int source, int destination) throws IllegalStateException {
+        Stack<Vertex> topoSorted;
+        try {
+            topoSorted = Graph.TopologicalSort(graph);
+        } catch (IllegalStateException ex) {
+            System.err.println("Could not perform TopologicalSort!");
+            throw ex;
+        }
+
+        // Cache start and end vertex
+        Optional<Vertex> vertexStartOptional = graph.getVertexById(source);
+        Optional<Vertex> vertexEndOptional = graph.getVertexById(destination);
+        if (vertexEndOptional.isEmpty() || vertexStartOptional.isEmpty()) {
+            throw new IllegalStateException("Given vertices do not exist!");
+        }
+        Vertex vertexStart = vertexStartOptional.get();
+        Vertex vertexEnd = vertexEndOptional.get();
+        int distance[] = new int[graph.noVertices];
+        Map<Vertex, Vertex> maxDist = new HashMap<>();
+
+        // Initialize Distances to MIN and mark the source distance as 0
+        for (int i = 0; i < graph.noVertices; i++) {
+            distance[i] = Integer.MAX_VALUE;
+        }
+        distance[destination] = 0;
+
+        // Process the vertices in the order given by the Topological sort
+        while (!topoSorted.empty()) {
+            Vertex nextVertex = topoSorted.pop();
+
+            // Compute the path lenghts
+            for (Vertex v : nextVertex.getInVertices()) {
+                if (distance[v.getvID()] > distance[nextVertex.getvID()]) {
+                    Edge edge = graph.getEdge(v.getvID(), nextVertex.getvID()).get();
+                    distance[v.getvID()] = distance[nextVertex.getvID()] + edge.getWeight();
+                    maxDist.put(v, nextVertex);
+                }
+            }
+        }
+
+        // Construct Path
+        List<Vertex> path = new ArrayList<>();
+        if(distance[vertexStart.getvID()] == Integer.MAX_VALUE) {
+            throw new IllegalStateException("No such path!");
+        }
+
+        Vertex currVertex = vertexStart;
+        path.add(currVertex);
+        boolean pathFound = false;
+        while (!pathFound) {
+            currVertex = maxDist.get(currVertex);
+            path.add(currVertex);
+            if (currVertex.getvID() == destination) {
+                pathFound = true;
+            }
+        }
+
+        return path;
+    }
 }

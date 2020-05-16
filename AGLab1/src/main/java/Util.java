@@ -88,11 +88,12 @@ public class Util {
         return path;
     }
 
-    // Problem Statement - Write a program that, given a graph with positive costs and two vertices,
-    //  finds a lowest cost walk between the given vertices,
-    //  using a "backwards" Dijkstra algorithm
-    //  (Dijkstra algorithm that searches backwards, from the ending vertex)
-
+    /* Problem Statement:
+        Write a program that, given a graph with positive costs and two vertices,
+            finds a lowest cost walk between the given vertices,
+            using a "backwards" Dijkstra algorithm
+            (Dijkstra algorithm that searches backwards, from the ending vertex)
+    */
     /**
      * Searches for the lowest cost path between 2 vertices given by their IDs.
      * Performs a Dijkstra's algorithm on the graph starting at {@code vertexEndID} and
@@ -133,7 +134,7 @@ public class Util {
                     dist.put(other, dist.get(current) + costOtherToCurrent);
                     pathComparator.distCopy = dist;
                     queue.add(other);
-                    prev.put(other, current);   //This might need to be swapped
+                    prev.put(other, current);
                 }
             }
             if (current == vertexStart) {
@@ -141,12 +142,9 @@ public class Util {
             }
         }
 
-
         if (!found) {
             throw new IllegalStateException("No such path!");
         }
-
-
 
         List<Vertex> lowestCostPath = new ArrayList<>();
         Vertex current = vertexEnd;
@@ -166,5 +164,11 @@ public class Util {
         return lowestCostPath;
     }
 
-
+    /*
+     * Problem Statement:
+     *  Given an undirected graph, find a Hamiltonian cycle (if it exists).
+     */
+    //public static List<Vertex> FindHamiltonianCycle(Graph graph) {
+    //
+    //}
 }
