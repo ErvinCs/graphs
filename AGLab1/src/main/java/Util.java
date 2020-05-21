@@ -178,6 +178,8 @@ public class Util {
             }
         }
 
+        graph.sortVerticesByDecreasingNumberOfEdges();
+
         for(Vertex vertex : graph.getVertices()) {
             Iterator<Vertex> vertexIterator = vertex.getOutVertices().iterator();
             while (vertex.getOutDegree() > 2) {

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -112,6 +113,24 @@ public class Graph {
     }
 
     // -------------------- Operations --------------------
+
+    public void sortVerticesByDecreasingNumberOfEdges() {
+        Vertex[] vertArray = Arrays.copyOf(vertices.toArray(), vertices.size(), Vertex[].class);
+        for(int i = 0; i < this.noVertices-1; i++) {
+            for(int j = i+1; j < this.noVertices; j++) {
+                if (vertArray[i].getOutDegree() < vertArray[j].getOutDegree()) {
+                    Vertex temp = vertArray[i];
+                    vertArray[i] = vertArray[j];
+                    vertArray[j] = temp;
+                }
+            }
+        }
+        this.vertices.clear();
+        for(int i = 0; i < this.noVertices; i++) {
+            this.vertices.add(vertArray[i]);
+        }
+    }
+
     /**
      * Used to parse the set of vertices
      * @return Stream of Vertex for the graph
@@ -352,7 +371,7 @@ public class Graph {
      */
     public static Stack<Vertex> TopologicalSort(Graph graph) throws IllegalStateException {
         Stack<Vertex> topoSortedContainer = new Stack<>();
-        Queue<Vertex> queue = new LinkedList<>();
+        Stack<Vertex> queue = new Stack<>();
         Map<Vertex, Integer> inCountMap = new HashMap<>();
         boolean[] visited = new boolean[graph.getNoVertices()];
 
@@ -369,7 +388,7 @@ public class Graph {
         }
 
         while(!queue.isEmpty()) {
-            Vertex current = queue.poll();
+            Vertex current = queue.pop();
             topoSortedContainer.push(current);
             for(Vertex v : current.getOutVertices()) {
                 if (!visited[v.getvID()]) {
